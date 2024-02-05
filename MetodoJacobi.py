@@ -29,7 +29,7 @@ def obtener_igualdad(list):
     for elemento in list:
         if(elemento == "="):
             bandera = True
-        if(bandera):
+        if(bandera and elemento != "="):
             igualdad += elemento
 
     return igualdad
@@ -83,7 +83,6 @@ def ordenar_matriz(matriz):
                     polinomio += "+"+str(fila[i])+"z"
                 else:
                     polinomio += str(fila[i])+"z"
-        
         matrizFinal.append(polinomio+igualdades[indices_maximos[contador]])
         polinomio = ""
         contador += 1
@@ -106,12 +105,20 @@ def formar_matriz(ec1,ec2,ec3):
     igualdades[2] = obtener_igualdad(ec3)
     
     matriz = ordenar_matriz(matriz)
-    print(matriz[0])
+    print(matriz)
     despejes[0]=despejar_incognitas(obtener_cocientes(obtener_valores(matriz[0])), int(igualdades[0][1:]), 0)
     despejes[1]=despejar_incognitas(obtener_cocientes(obtener_valores(matriz[1])), int(igualdades[1][1:]), 1)  
     despejes[2]=despejar_incognitas(obtener_cocientes(obtener_valores(matriz[2])), int(igualdades[2][1:]), 2)
 
     print(despejes)
+
+def calcularError(valorAnterior,aproximacion):
+    error = np.abs((float(valorAnterior)-float(aproximacion)))
+    error = float(f"{error:.8f}")
+    print(error);
+
 formar_matriz("2x-89z-4y=10",
               "-6y-4z+10x=11",
               "-2z+6y-9x=14")
+
+calcularError("-0.04569484","-0.04518692")
