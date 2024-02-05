@@ -58,19 +58,9 @@ def despejar_incognitas(list, igualdad, bandera):
     elif(bandera == 2):
         variable = z
     
-    t = sp.symbols('t')
-
-    ecuacion_temp = list[0]*x + list[1]*y + list[2]*z - igualdad*t
-
-    solucion_temp = sp.solve(ecuacion_temp, variable)
-
-    if solucion_temp:
-        solucion = {variable: solucion_temp[0].subs(t, 1)}
-        return solucion[variable]
-    else:
-        return None
+    solucion = sp.solve(ecuacion, variable, dict=True)
     
-    return solucion[variable]
+    return solucion[0][variable]
 
 def ordenar_matriz(matriz):
     global contador
