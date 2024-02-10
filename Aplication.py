@@ -1,20 +1,23 @@
 import tkinter as tk
-from tkinter import Label, Tk
+from tkinter import Label, BOTH, Tk
 from PIL import Image, ImageTk
-
+from PDFViewerApp import PDFViewerApp
 
 class Aplication(tk.Frame):
-    # ----------------------------------------------------------------------
-    def __init__(self, principal_frame=None):
-        super().__init__(principal_frame)
-        self.principal_frame = principal_frame
+    
+    def __init__(self, master=None):
+        super().__init__(master)
+        self.master = master
         self.pack()
         self.mainInterface()
+        
+# ----------------------------------------------------------------------
     
+    # CREACION DE LA INTERFAZ GRAFICA
     def mainInterface(self):
-        self.principal_frame.title("Proyecto Métodos Numéricos")
-        self.principal_frame.resizable(0, 0)
-        self.principal_frame.geometry("680x420")
+        self.master.title("Proyecto Métodos Numéricos")
+        self.master.resizable(0, 0)
+        self.master.geometry("680x420")
 
         # DICCIONARIO ESTILIZADOR PARA LOS ELEMENTOS GRAFICOS
         self.labels_style = {"font": ("Arial", 13, "bold"),
@@ -24,13 +27,13 @@ class Aplication(tk.Frame):
                              "padx": 5,
                              "borderwidth": 1,
                              "relief": "solid"}
-        self.buttons_style = {"font": ("Arial", 12, "bold"),
+        self.buttons_style = {"font": ("Arial", 11, "bold"),
                               "fg": "white",
                               "bg": "blue",
                               "pady": 1,
                               "borderwidth": 2,
                               "relief": "solid"}
-        self.efect_btn_style = {"font": ("Arial", 12, "bold"),
+        self.efect_btn_style = {"font": ("Arial", 11, "bold"),
                                 "fg": "black",
                                 "bg": "lightblue",
                                 "pady": 1,
@@ -44,8 +47,7 @@ class Aplication(tk.Frame):
 
         # FONDO PRINCIPAL SOBRE ETIQUETA
         # RELWIDTH Y RELHEIGHT SON POSICIONES RELATIVAS DEL ANCHO Y ALTO
-        
-        self.background = Label( image=self._backgroud_image)
+        self.background = Label(image=self._backgroud_image)
         self.background.place(x=0, y=0, relwidth=1, relheight=1)
 
         # ETIQUETAS
@@ -53,21 +55,22 @@ class Aplication(tk.Frame):
         # EL "**" DESEMPAQUETA EL DICCIONARIO
         # ES DECIR, LO CONVIERTE EN PARAMETROS SEPARADOS POR COMA
         # ESTOS SON LEIDOS Y APLICADOS AL ELEMENTO DESEADO
-        self.home_label = Label(self.principal_frame,
-                                text="Bienvenido(a) al programa de cálculo de ecuaciones mediante el método de Jacobi, por favor seleccione la opción que desee:",
+        self.home_label = Label(self.master,
+                                text="Bienvenido(a) al programa de cálculo de ecuaciones lineales mediante el método de Jacobi",
                                 **self.labels_style)
+        self.home_label.config(font=("Calibri", 12, "bold"))
         self.home_label.place(relx=0.5, rely=0.2, anchor="center")
 
         # BOTONES
-        self.manual_btn = tk.Button(self.principal_frame,
-                                    text="1. Ver manual de uso.",
-                                    command=lambda: one(self),
+        self.manual_btn = tk.Button(self.master,
+                                    text="1. Ver Historia del Método.",
+                                    command=lambda: self.history(),
                                     **self.buttons_style)
         self.manual_btn.place(x=5, rely=0.4, anchor="w")
         self.manual_btn.bind("<Enter>",lambda event: self.in_cursor_btn(event, 1))
         self.manual_btn.bind("<Leave>",lambda event: self.out_cursor_btn(event, 1))
         
-        self.calc_btn = tk.Button(self.principal_frame, text="2. Calcular sistema de ecuaciones.",
+        self.calc_btn = tk.Button(self.master, text="2. Calcular sistema de ecuaciones.",
                             command=lambda: two(self),
                                     **self.buttons_style)
         self.calc_btn.place(x=5, rely=0.5, anchor="w")
@@ -76,10 +79,8 @@ class Aplication(tk.Frame):
         self.calc_btn.bind("<Leave>",
                              lambda event: self.out_cursor_btn(event, 1))
 
-
-
-        self.exit_btn = tk.Button(self.principal_frame, text="Salir",
-                                    command=lambda: self.principal_frame.destroy(),
+        self.exit_btn = tk.Button(self.master, text="Salir",
+                                    command=lambda: self.master.destroy(),
                                     **self.buttons_style)
         self.exit_btn.config(bg="red")
         self.exit_btn.place(relx=0.5, rely=0.8, anchor="center")
@@ -107,15 +108,28 @@ class Aplication(tk.Frame):
 # ----------------------------------------------------------------------
 
     def reopen(self):
-        self.principal_frame.destroy()
         root = Tk()
-        app = Aplication(principal_frame=root)
+        app = Aplication(master=root)
         app.mainloop()
 
 # ----------------------------------------------------------------------
+    
+    def history(self):
+        self.master.title("Historia del Método de Jacobi")
+        self.clear_widgets()
 
+        # CREANDO EL VISOR DE PDF
+        pdf_viewer = PDFViewerApp(self.master, "PROYECTO METODOS NUMERICOS.pdf", app)
+        pdf_viewer.canvas.pack(fill=BOTH, expand=True)
+
+    def clear_widgets(self):
+        # ELIMINA TODOS LOS WIDGETS DE LA VENTANA PRINCIPAL
+        for widget in self.master.winfo_children():
+            widget.destroy()
+            
+# ----------------------------------------------------------------------
             
 root = Tk()
 # SE CREA UNA INTERFAZ TEMPORAL PARA MANTENER LA APP ABIERTA
-app = Aplication(principal_frame=root)
+app = Aplication(master=root)
 app.mainloop()
