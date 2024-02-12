@@ -1,7 +1,8 @@
 import tkinter as tk
-from tkinter import Label, BOTH, Tk
 from PIL import Image, ImageTk
+from tkinter import Label, font, BOTH, Tk
 from PDFViewerApp import PDFViewerApp
+
 
 class Aplication(tk.Frame):
     
@@ -9,13 +10,14 @@ class Aplication(tk.Frame):
         super().__init__(master)
         self.master = master
         self.pack()
-        self.mainInterface()
+        self.main_interface()
         
 # ----------------------------------------------------------------------
     
     # CREACION DE LA INTERFAZ GRAFICA
-    def mainInterface(self):
-        self.master.title("Proyecto Métodos Numéricos")
+    def main_interface(self):
+        self.master.title("Proyecto de Métodos Numéricos")
+        self.master.iconbitmap("./images/icon.ico")
         self.master.resizable(0, 0)
         self.master.geometry("680x420")
 
@@ -39,7 +41,7 @@ class Aplication(tk.Frame):
                                 "pady": 1,
                                 "borderwidth": 2,
                                 "relief": "solid"}
-        
+
         # IMAGEN DE FONDO 
         self.image = Image.open("./images/background.jpg")
         self.image = self.image.resize((680, 420))

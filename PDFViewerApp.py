@@ -1,7 +1,8 @@
-import tkinter as tk
-from tkinter import BOTH, RIGHT, BOTTOM, LEFT, Y, messagebox, ttk
-from PIL import Image, ImageTk
 import fitz
+import tkinter as tk
+from PIL import Image, ImageTk, ImageFilter
+from tkinter import BOTH, RIGHT, BOTTOM, LEFT, Y, messagebox
+
 
 class PDFViewerApp():
     def __init__(self, master, pdf_path, app_instance):
@@ -56,8 +57,8 @@ class PDFViewerApp():
         self.load_pdf()
         
     def go_to_menu(self):
-        self.master.destroy()
-        self.app_instance.reopen()
+        self.app_instance.clear_widgets()
+        self.app_instance.main_interface()
 
     def prev_page(self):
         if self.page_number > 0:
@@ -75,14 +76,15 @@ class PDFViewerApp():
             self.page_number -= 1
             page = self.pdf_document.load_page(self.page_number)
             messagebox.showinfo("Aviso", "Esta es la última página del documento")
-            
-        
+               
         # CONVIERTE LA PÁGINA DEL PDF A UNA IMAGEN
         pix = page.get_pixmap()
         self.width_page = pix.width
         self.height_page = pix.height
         img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
-        self.rendered_page = ImageTk.PhotoImage(img)
+        # APLICA UN FILTRO DE SUAVIZADO A LA IMAGEN
+        img_smoothed = img.filter(ImageFilter.DETAIL)
+        self.rendered_page = ImageTk.PhotoImage(img_smoothed)
 
         # RENDERIZA LA IMAGEN EN EL CANVAS
         self.canvas.create_image(0, 0, anchor=tk.NW, image=self.rendered_page)
