@@ -5,15 +5,15 @@ import sympy as sp
 contador = 0
 igualdades = ["", "", ""]
 despejes = ["", "", ""]
-x_jacobi = 0;
-y_jacobi = 0;
-z_jacobi = 0;
+x_jacobi = 0
+y_jacobi = 0
+z_jacobi = 0
+var = ["","",""]
 
-
-def ordenar_ecuacion(ecuacion):
+def ordenar_ecuacion(ecuacion,variables):
     ecuacion_ordenada = [0,0,0,0] #SE CREA UN VECTOR [X,Y,Z,C], DE MANERA QUE SI FALTA ALGUNA VARIABLE, LA MISMA QUEDA EN 0 POR DEFECTO
     for termino in ecuacion: #LA ECUACION LLEGA EN ESTA FORMA ['-2x', 'z', '3y', '20']
-        if termino[-1] == "x": #CON EL [-1] ME POSICIONO EN EL ÚLTIMO CARACTER DEL STRING OBTENIDO DEL ELEMENTO DEL VECTOR EXTRAIDO EN EL FOR "-2x" -> "x"
+        if termino[-1] == str(variables[0]): #CON EL [-1] ME POSICIONO EN EL ÚLTIMO CARACTER DEL STRING OBTENIDO DEL ELEMENTO DEL VECTOR EXTRAIDO EN EL FOR "-2x" -> "x"
             if termino[:-1] == "-":#CON EL [:-1] ME POSICIONO EN LOS CARATERES DEL STRING OBTENIDO DEL ELEMENTO DEL VECTOR EXTRAIDO EN EL FOR OMITIENDO LA ULTIMA POSICION  "-2x" -> "-2"
                 ecuacion_ordenada[0] = -1
                 continue
@@ -21,7 +21,7 @@ def ordenar_ecuacion(ecuacion):
                 ecuacion_ordenada[0] = 1 #SE GENERA UN 1 REPRESENTANDO QUE SOLO EXISTE LA VARIABLE
                 continue
             ecuacion_ordenada[0] = int(termino[:-1])#SI LA VARIABLE NO ESTÁ SOLA O EN ESTAS FORMAS "-x" - "y", ENTONCES AGREGAMOS EL VALOR QUE LAS ACOMPAÑA A LA ECUACIÓN ORDENADA
-        if termino[-1] == "y":
+        if termino[-1] == str(variables[1]):
             if termino[:-1] == "-":
                 ecuacion_ordenada[1] = -1
                 continue
@@ -29,7 +29,7 @@ def ordenar_ecuacion(ecuacion):
                 ecuacion_ordenada[1] = 1
                 continue
             ecuacion_ordenada[1] = int(termino[:-1])
-        if termino[-1] == "z":
+        if termino[-1] == str(variables[2]):
             if termino[:-1] == "-":
                 ecuacion_ordenada[2] = -1
                 continue
@@ -38,9 +38,7 @@ def ordenar_ecuacion(ecuacion):
                 continue
             ecuacion_ordenada[2] = int(termino[:-1])
     ecuacion_ordenada[3] = int(ecuacion[-1])
-    return ecuacion_ordenada #DEVUELVE EL VECTOR DIRECTOR DE LA ECUACIÓN
-#print(ordenar_ecuacion(['x', '3z', '5y', '3']))
-
+    return ecuacion_ordenada
 
 def separar_terminos_ecuacion(string_ecuacion):
     lista_ecuacion = []
@@ -72,6 +70,10 @@ def obtener_cocientes(list):
     cocientes = [num for num in list[:3]]
     return cocientes
 
+def incognitas(ecuacion):
+    list_var = re.findall('[a-zA-Z]',ecuacion)
+    return sorted(list_var)
+
 def obtener_igualdad(list):
     igualdad = ""
     bandera = False
@@ -89,25 +91,24 @@ def matriz_var(ecuacion):
     var_matriz.append(ordenar_ecuacion(separar_terminos_ecuacion(ecuacion)))
     print(var_matriz)
     
-def despejar_incognitas(list, igualdad, bandera):
-    x, y, z = sp.symbols('x y z')
-
-    ecuacion = list[0]*x+list[1]*y+list[2]*z
+def despejar_incognitas(list, igualdad, bandera,incognitas):
+    ecuacion = list[0]*incognitas[0]+list[1]*incognitas[1]+list[2]*incognitas[2]
     solucion = None
     ecuacion = sp.Eq(ecuacion, igualdad)
     variable = None
 
     if(bandera == 0):
-        variable = x
+        variable = incognitas[0]
     elif(bandera == 1):
-        variable = y
+        variable = incognitas[1]
     elif(bandera == 2):
-        variable = z
+        variable = incognitas[2]
     
     solucion = sp.solve(ecuacion, variable, dict=True)
     return solucion[0][variable]
 
-def ordenar_matriz(matriz):
+def ordenar_matriz(matriz,variables):
+    variables_symbols = ''.join(map(str,variables))
     global contador
     polinomio = ""
     matrizFinal = []
@@ -120,44 +121,48 @@ def ordenar_matriz(matriz):
     for fila in matriz:
         for i in range(len(fila)):
             if(i == 0):
-                polinomio += str(fila[i])+"x"
+                polinomio += str(fila[i])+variables_symbols[0]
             if(i == 1):
                 if(fila[i] > 0):
-                    polinomio += "+"+str(fila[i])+"y"
+                    polinomio += "+"+str(fila[i])+variables_symbols[1]
                 else:
-                    polinomio += str(fila[i])+"y"
+                    polinomio += str(fila[i])+variables_symbols[1]
             if(i == 2):
                 if(fila[i] > 0):
-                    polinomio += "+"+str(fila[i])+"z"
+                    polinomio += "+"+str(fila[i])+variables_symbols[2]
                 else:
-                    polinomio += str(fila[i])+"z"
+                    polinomio += str(fila[i])+variables_symbols[2]
         matrizFinal.append(polinomio+igualdades[indices_maximos[contador]])
         polinomio = ""
         contador += 1
 
-    return matrizFinal
-    
+    return matrizFinal  
+
+def asingnarVar(inc):
+    var.clear()
+    for element in inc:
+        var.append(element)
                 
 def formar_matriz(ec1,ec2,ec3):
     matriz=[]
+    incog = sp.symbols(incognitas(ec1))
     for i in range(3):
         if i == 0:
-            matriz.append(ordenar_ecuacion(separar_terminos_ecuacion(ec1))[:3])
+            matriz.append(ordenar_ecuacion(separar_terminos_ecuacion(ec1),incog)[:3])
         elif i == 1:
-            matriz.append(ordenar_ecuacion(separar_terminos_ecuacion(ec2))[:3])
+            matriz.append(ordenar_ecuacion(separar_terminos_ecuacion(ec2),incog)[:3])
         elif i == 2:
-            matriz.append(ordenar_ecuacion(separar_terminos_ecuacion(ec3))[:3])
+            matriz.append(ordenar_ecuacion(separar_terminos_ecuacion(ec3),incog)[:3])
             
     igualdades[0] = obtener_igualdad(ec1)
     igualdades[1] = obtener_igualdad(ec2)
     igualdades[2] = obtener_igualdad(ec3)
-    
-    matriz = ordenar_matriz(matriz)
-    
-    print(matriz[0])
-    despejes[0]=despejar_incognitas(ordenar_ecuacion(separar_terminos_ecuacion(matriz[0])), int(igualdades[0][1:]), 0)
-    despejes[1]=despejar_incognitas(ordenar_ecuacion(separar_terminos_ecuacion(matriz[1])), int(igualdades[1][1:]), 1)  
-    despejes[2]=despejar_incognitas(ordenar_ecuacion(separar_terminos_ecuacion(matriz[2])), int(igualdades[2][1:]), 2)
+    matriz = ordenar_matriz(matriz,incog)
+    #print(matriz)
+    despejes[0]=despejar_incognitas(ordenar_ecuacion(separar_terminos_ecuacion(matriz[0]),incog), int(igualdades[0][1:]), 0,incog)
+    despejes[1]=despejar_incognitas(ordenar_ecuacion(separar_terminos_ecuacion(matriz[1]),incog), int(igualdades[1][1:]), 1,incog)  
+    despejes[2]=despejar_incognitas(ordenar_ecuacion(separar_terminos_ecuacion(matriz[2]),incog), int(igualdades[2][1:]), 2,incog)
+    asingnarVar(incog)
 
 def calcularError(valorAnterior,aproximacion):
     error = np.abs((float(valorAnterior)-float(aproximacion)))
@@ -189,31 +194,54 @@ def jacobi(x_in,y_in,z_in,error_max,iteraciones):
     x_form = despejes[0]
     y_form = despejes[1]
     z_form = despejes[2]
-    print(x_form)
-    print(y_form)
-    print(z_form)
-    print(f"Iteracion 0: X:{x_jacobi} \tY:{y_jacobi} \tZ:{z_jacobi}");
-    for i in range(1,iteraciones):
-        x_new = decimal(sustiuir(x_form,y_jacobi,z_jacobi,"y","z"))
-        y_new = decimal(sustiuir(y_form,x_jacobi,z_jacobi,"x","z"))
-        z_new = decimal(sustiuir(z_form,x_jacobi,y_jacobi,"x","y"))
-        if(x_jacobi != 0 and y_jacobi != 0 and z_jacobi != 0):
-            error_x = calcularError(x_jacobi,x_new)
-            error_y = calcularError(y_jacobi,y_new)
-            error_z = calcularError(z_jacobi,z_new)
-            if ((error_x < error_max and error_y < error_max and error_z < error_max)):
-                return f"La ecuacion convergio en la Iteracion {i}: X:{x_jacobi} Error X:{error_x} Y:{y_jacobi} Error Y:{error_y} Z:{z_jacobi} Error Z:{error_z}"
-        x_jacobi = x_new
-        y_jacobi = y_new
-        z_jacobi = z_new
-        if(len(str(x_jacobi))>6 or len(str(y_jacobi))>6 or len(str(z_jacobi))>6):
-            print(f"Iteración {i}: X: {x_jacobi:.7f}\tY: {y_jacobi:.7f}\tZ: {z_jacobi:.7f}\tErrores: X: {error_x*100:.2f}% \tY:{error_y*100:.2f}% \tZ:{error_z*100:.2f}%") 
-        else:
-          print(f"Iteración {i}: X: {x_jacobi}\tY: {y_jacobi}\tZ: {z_jacobi}")
+    if iteraciones > 0: # Ciclo con iteraciones
+        print("Condicion de Parada: \tMaximo de Iteraciones ",iteraciones)
+        print(f"Iteracion 1: X:{x_jacobi} \tY:{y_jacobi} \tZ:{z_jacobi}")
+        for i in range(1,iteraciones):
+            x_new = decimal(sustiuir(x_form,y_jacobi,z_jacobi,var[1],var[2]))
+            y_new = decimal(sustiuir(y_form,x_jacobi,z_jacobi,var[0],var[2]))
+            z_new = decimal(sustiuir(z_form,x_jacobi,y_jacobi,var[0],var[1]))
+            if(x_jacobi != 0 and y_jacobi != 0 and z_jacobi != 0):
+                error_x = calcularError(x_jacobi,x_new)
+                error_y = calcularError(y_jacobi,y_new)
+                error_z = calcularError(z_jacobi,z_new)
+            x_jacobi = x_new
+            y_jacobi = y_new
+            z_jacobi = z_new
+            if(len(str(x_jacobi))>6 or len(str(y_jacobi))>6 or len(str(z_jacobi))>6):
+                print(f"Iteración {i+1}: X: {x_jacobi:.7f}\tY: {y_jacobi:.7f}\tZ: {z_jacobi:.7f}\tErrores: X: {error_x:.5f}% \tY:{error_y:.5f} \tZ:{error_z:.5f}") 
+            else:
+                print(f"Iteración {i+1}: X: {x_jacobi}\tY: {y_jacobi}\tZ: {z_jacobi}")
+    if iteraciones == 0: # Ciclo con error minimo
+        print("Condicion de Parada: \tError menor a ",error_max)
+        print(f"Iteracion 0: X:{x_jacobi} \tY:{y_jacobi} \tZ:{z_jacobi}")
+        error_x = 0
+        error_y = 0
+        error_z = 0
+        i = 0
+        while True:
+            i+=1
+            x_new = decimal(sustiuir(x_form,y_jacobi,z_jacobi,var[1],var[2]))
+            y_new = decimal(sustiuir(y_form,x_jacobi,z_jacobi,var[0],var[2]))
+            z_new = decimal(sustiuir(z_form,x_jacobi,y_jacobi,var[0],var[1]))
+            if(x_jacobi != 0 and y_jacobi != 0 and z_jacobi != 0):
+                error_x = calcularError(x_jacobi,x_new)*100
+                error_y = calcularError(y_jacobi,y_new)*100
+                error_z = calcularError(z_jacobi,z_new)*100
+                if ((error_x < error_max) and (error_y < error_max) and (error_z < error_max)):
+                    print(f"Iteración {i}: X: {x_jacobi:.7f}\tY: {y_jacobi:.7f}\tZ: {z_jacobi:.7f}\tErrores: X: {error_x:.5f} \tY:{error_y:.5f} \tZ:{error_z:.5f}")
+                    break
+            x_jacobi = x_new
+            y_jacobi = y_new
+            z_jacobi = z_new
+            if(len(str(x_jacobi))>6 or len(str(y_jacobi))>6 or len(str(z_jacobi))>6):
+                print(f"Iteración {i}: X: {x_jacobi:.7f}\tY: {y_jacobi:.7f}\tZ: {z_jacobi:.7f}\tErrores: X: {error_x:.5f} \tY:{error_y:.5f} \tZ:{error_z:.5f}") 
+            else:
+                print(f"Iteración {i}: X: {x_jacobi}\tY: {y_jacobi}\tZ: {z_jacobi}")
 
-print("Despeje Automatizado")
-formar_matriz("10x+y+2z=3",
-             "4x+6y-z=9",
-            "-2x+3y+8z=51")
 
-jacobi(0,0,0,0.02,6)
+formar_matriz("10f+r+2w=3",
+             "4f+6r-w=9",
+            "-2f+3r+8w=51")
+
+jacobi(0,0,0,3,0)
