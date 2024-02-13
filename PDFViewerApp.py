@@ -51,20 +51,20 @@ class PDFViewerApp():
         # VINCULE EL EVENTO DE SCROLL DEL MOUSE AL CANVAS
         self.canvas.bind("<MouseWheel>", self._on_mousewheel)
         self.load_pdf()
-
+# ----------------------------------------------------------------------
     def next_page(self):
         self.page_number += 1
-        self.load_pdf()
-        
+        self.load_pdf()   
+# ----------------------------------------------------------------------
     def go_to_menu(self):
         self.app_instance.clear_widgets()
         self.app_instance.main_interface()
-
+# ----------------------------------------------------------------------
     def prev_page(self):
         if self.page_number > 0:
             self.page_number -= 1
             self.load_pdf()
-
+# ----------------------------------------------------------------------
     def load_pdf(self):
         # LIMPIA EL CANVAS
         self.canvas.delete("all")
@@ -90,7 +90,7 @@ class PDFViewerApp():
         self.canvas.create_image(0, 0, anchor=tk.NW, image=self.rendered_page)
         self.canvas.config(scrollregion=self.canvas.bbox("all"))
         self.master.geometry(f"{self.width_page}x480")
-
-        # MÉTODO PARA HACER SCROLL EN EL CANVAS
+# ----------------------------------------------------------------------
+    # MÉTODO PARA HACER SCROLL EN EL CANVAS
     def _on_mousewheel(self, event):
         self.canvas.yview_scroll(-1*(event.delta//120), "units")

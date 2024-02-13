@@ -1,19 +1,17 @@
 import tkinter as tk
 from PIL import Image, ImageTk
-from tkinter import Label, font, BOTH, Tk
+from tkinter import Label, BOTH, Tk
 from PDFViewerApp import PDFViewerApp
+from JacobiDisplayApp import JacobiDisplayApp
 
 
 class Aplication(tk.Frame):
-    
     def __init__(self, master=None):
         super().__init__(master)
         self.master = master
         self.pack()
-        self.main_interface()
-        
+        self.main_interface()  
 # ----------------------------------------------------------------------
-    
     # CREACION DE LA INTERFAZ GRAFICA
     def main_interface(self):
         self.master.title("Proyecto de Métodos Numéricos")
@@ -66,14 +64,14 @@ class Aplication(tk.Frame):
         # BOTONES
         self.manual_btn = tk.Button(self.master,
                                     text="1. Ver Historia del Método.",
-                                    command=lambda: self.history(),
+                                    command=lambda: self.history_view(),
                                     **self.buttons_style)
         self.manual_btn.place(x=5, rely=0.4, anchor="w")
         self.manual_btn.bind("<Enter>",lambda event: self.in_cursor_btn(event, 1))
         self.manual_btn.bind("<Leave>",lambda event: self.out_cursor_btn(event, 1))
         
         self.calc_btn = tk.Button(self.master, text="2. Calcular sistema de ecuaciones.",
-                            command=lambda: two(self),
+                            command=lambda: self.jacobi_solver(),
                                     **self.buttons_style)
         self.calc_btn.place(x=5, rely=0.5, anchor="w")
         self.calc_btn.bind("<Enter>",
@@ -90,32 +88,25 @@ class Aplication(tk.Frame):
                              lambda event: self.in_cursor_btn(event, 0))
         self.exit_btn.bind("<Leave>",
                              lambda event: self.out_cursor_btn(event, 0))
-
 # ----------------------------------------------------------------------
-
-    # FUNCIONES DE ESTILIZADO
     def in_cursor_btn(self, event, tipo):
         if tipo == 0:
             event.widget.config(**self.efect_btn_style)
         else:
             event.widget.config(**self.efect_btn_style)
-            
+# ----------------------------------------------------------------------     
     def out_cursor_btn(self, event, tipo):
         if tipo == 0:
             event.widget.config(**self.buttons_style)
             event.widget.config(bg="red")
         else:
             event.widget.config(**self.buttons_style)
-
 # ----------------------------------------------------------------------
-
     def reopen(self):
         root = Tk()
         app = Aplication(master=root)
         app.mainloop()
-
-# ----------------------------------------------------------------------
-    
+# ----------------------------------------------------------------------    
     def history(self):
         self.master.title("Historia del Método de Jacobi")
         self.clear_widgets()
@@ -123,15 +114,19 @@ class Aplication(tk.Frame):
         # CREANDO EL VISOR DE PDF
         pdf_viewer = PDFViewerApp(self.master, "PROYECTO METODOS NUMERICOS.pdf", app)
         pdf_viewer.canvas.pack(fill=BOTH, expand=True)
-
+# ----------------------------------------------------------------------
+    def jacobi_solver(self):
+        self.master.title("Calculadora de Ecuaciones Lineales por el Método de Jacobi")
+        self.clear_widgets()
+        jacobi_viewer = JacobiDisplayApp(self.master, self)
+        jacobi_viewer.canvas.pack(fill=BOTH, expand=True)
+# ----------------------------------------------------------------------
     def clear_widgets(self):
         # ELIMINA TODOS LOS WIDGETS DE LA VENTANA PRINCIPAL
         for widget in self.master.winfo_children():
-            widget.destroy()
-            
-# ----------------------------------------------------------------------
-            
+            widget.destroy() 
+# ---------------------------------------------------------------------- 
 root = Tk()
-# SE CREA UNA INTERFAZ TEMPORAL PARA MANTENER LA APP ABIERTA
+# SE CREA UNA INTERFAZ TEMPORAL PARA MANTENER EL APP ABIERTA
 app = Aplication(master=root)
 app.mainloop()
