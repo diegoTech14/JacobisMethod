@@ -14,11 +14,11 @@ class JacobiDisplayApp():
         self.rendered_page = None
 
     def excel_jacobi_steps():
-        column_names = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
+        columns_id = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
         workbook = openpyxl.Workbook()
         wb = workbook
         worksheet = wb.active
-        for i,name in enumerate(column_names):
+        for i,name in enumerate(columns_id):
             worksheet[str(name)+str(count_rows)]  	=	str(excel_sheets[i])
         wb.save(filename = book)
         workbook.close()

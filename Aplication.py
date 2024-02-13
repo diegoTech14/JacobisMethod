@@ -107,7 +107,7 @@ class Aplication(tk.Frame):
         app = Aplication(master=root)
         app.mainloop()
 # ----------------------------------------------------------------------    
-    def history(self):
+    def history_view(self):
         self.master.title("Historia del Método de Jacobi")
         self.clear_widgets()
 
