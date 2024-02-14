@@ -119,7 +119,7 @@ class Aplication(tk.Frame):
         self.master.title("Calculadora de Ecuaciones Lineales por el Método de Jacobi")
         self.clear_widgets()
         jacobi_viewer = JacobiDisplayApp(self.master, self)
-        jacobi_viewer.canvas.pack(fill=BOTH, expand=True)
+        jacobi_viewer.pack(fill=BOTH, expand=True)
 # ----------------------------------------------------------------------
     def clear_widgets(self):
         # ELIMINA TODOS LOS WIDGETS DE LA VENTANA PRINCIPAL
