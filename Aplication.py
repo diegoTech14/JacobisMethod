@@ -119,6 +119,9 @@ class Aplication(tk.Frame):
         self.master.title("Calculadora de Ecuaciones Lineales por el Método de Jacobi")
         self.clear_widgets()
         jacobi_viewer = JacobiDisplayApp(self.master, self)
+        self.master.attributes('-fullscreen', True)
+        self.master.geometry("1200x600")
+        self.master.bind("<Escape>", lambda event: self.master.attributes("-fullscreen", not self.master.attributes("-fullscreen")))
         jacobi_viewer.pack(fill=BOTH, expand=True)
 # ----------------------------------------------------------------------
     def clear_widgets(self):
