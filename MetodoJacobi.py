@@ -226,7 +226,6 @@ class JacobiMethod:
         x_form = self.despejes[0]
         y_form = self.despejes[1]
         z_form = self.despejes[2]
-        self.imprirFormulas()
         if (iteraciones == 0 and error_max == 0): #En caso de que se ingresen 0 iteraciones y 0 en error se da el mensaje de error
             self.salida += ("\nNo se establecieron los paremetros necesarios")
         if (iteraciones > 0 and error_max > 0): # Condicion Unica ejecuta el metodo tanto por error como por iteraciones
@@ -237,7 +236,7 @@ class JacobiMethod:
             iteraciones = -1
             error_max = -1
             self.jacobi_iteraciones = []
-        if iteraciones > 0 and error_max < 0: # Ciclo con iteraciones
+        if iteraciones > 0: # Ciclo con iteraciones
             self.salida += "\n\nCondicion de parada -> "+ str(iteraciones) + " iteraciones"
             list = [1,self.x_jacobi,self.y_jacobi,self.y_jacobi]
             self.jacobi_iteraciones.append(list)
@@ -246,18 +245,17 @@ class JacobiMethod:
                 x_new = self.decimal(self.sustiuir(x_form,self.y_jacobi,self.z_jacobi,self.var[1],self.var[2]))
                 y_new = self.decimal(self.sustiuir(y_form,self.x_jacobi,self.z_jacobi,self.var[0],self.var[2]))
                 z_new = self.decimal(self.sustiuir(z_form,self.x_jacobi,self.y_jacobi,self.var[0],self.var[1]))
-                if(self.x_jacobi != 0 and self.y_jacobi != 0 and self.z_jacobi != 0): #Realizamos el calculo de errores si los valores X,Y,Z son diferentes a 0
-                    error_x = self.calcularError(self.x_jacobi,x_new)*100
-                    error_y = self.calcularError(self.y_jacobi,y_new)*100
-                    error_z = self.calcularError(self.z_jacobi,z_new)*100
-                    #Reasignamos X,Y,Z con los valores actuales y repetimos el ciclo
+                error_x = self.calcularError(self.x_jacobi,x_new)
+                error_y = self.calcularError(self.y_jacobi,y_new)
+                error_z = self.calcularError(self.z_jacobi,z_new)
+                #Reasignamos X,Y,Z con los valores actuales y repetimos el ciclo
                 self.x_jacobi = x_new
                 self.y_jacobi = y_new
                 self.z_jacobi = z_new
                 if(len(str(self.x_jacobi))>6 or len(str(self.y_jacobi))>6 or len(str(self.z_jacobi))>6 and i > 2):
                     list = [i+1,float(self.x_jacobi),float(self.y_jacobi),float(self.z_jacobi),error_x,error_y,error_z]
                 else:
-                   list = [i+1,self.x_jacobi,self.y_jacobi,self.z_jacobi]
+                   list = [i+1,self.x_jacobi,self.y_jacobi,self.z_jacobi,error_x,error_y,error_z]
                 self.jacobi_iteraciones.append(list)
             self.imprimirIteraciones()
         if iteraciones == 0 and error_max > 0: # Ciclo con error minimo
@@ -274,36 +272,36 @@ class JacobiMethod:
                 x_new = self.decimal(self.sustiuir(x_form,self.y_jacobi,self.z_jacobi,self.var[1],self.var[2]))
                 y_new = self.decimal(self.sustiuir(y_form,self.x_jacobi,self.z_jacobi,self.var[0],self.var[2]))
                 z_new = self.decimal(self.sustiuir(z_form,self.x_jacobi,self.y_jacobi,self.var[0],self.var[1]))
-                if(self.x_jacobi != 0 and self.y_jacobi != 0 and self.z_jacobi != 0): #Realizamos el calculo de errores si los valores X,Y,Z son diferentes a 0
-                    error_x = self.calcularError(self.x_jacobi,x_new)*100
-                    error_y = self.calcularError(self.y_jacobi,y_new)*100
-                    error_z = self.calcularError(self.z_jacobi,z_new)*100
-                    if ((error_x < error_max) and (error_y < error_max) and (error_z < error_max)):
-                        #Si los tres errores son menores al maximo asignamos los valores de X,Y,Z y rompemos el bucle
-                        self.x_jacobi = x_new
-                        self.y_jacobi = y_new
-                        self.z_jacobi = z_new
-                        list = [i+1,float(self.x_jacobi),float(self.y_jacobi),float(self.z_jacobi),error_x,error_y,error_z]
-                        self.jacobi_iteraciones.append(list)
-                        self.imprimirIteraciones()
-                        break
+                error_x = self.calcularError(self.x_jacobi,x_new)
+                error_y = self.calcularError(self.y_jacobi,y_new)
+                error_z = self.calcularError(self.z_jacobi,z_new)
+                if ((error_x < error_max/100) and (error_y < error_max/100) and (error_z < error_max/100)):
+                    #Si los tres errores son menores al maximo asignamos los valores de X,Y,Z y rompemos el bucle
+                    self.x_jacobi = x_new
+                    self.y_jacobi = y_new
+                    self.z_jacobi = z_new
+                    list = [i+1,float(self.x_jacobi),float(self.y_jacobi),float(self.z_jacobi),error_x,error_y,error_z]
+                    self.jacobi_iteraciones.append(list)
+                    self.imprimirIteraciones()
+                    break
                     #Reasignamos X,Y,Z con los valores actuales y repetimos el ciclo
                 self.x_jacobi = x_new
                 self.y_jacobi = y_new
                 self.z_jacobi = z_new
-                if(i>20): #Maximo de iteraciones establecido para la convergencia del metodo una vez llegado aqui se finaliza por defecto
+                if(i>45): #Maximo de iteraciones establecido para la convergencia del metodo una vez llegado aqui se finaliza por defecto
                     break
                 if(len(str(self.x_jacobi))>6 or len(str(self.y_jacobi))>6 or len(str(self.z_jacobi))>6 and i > 2):
                     list = [i+1,float(self.x_jacobi),float(self.y_jacobi),float(self.z_jacobi),error_x,error_y,error_z]
                 else:
-                   list = [i+1,self.x_jacobi,self.y_jacobi,self.z_jacobi]
+                   list = [i+1,self.x_jacobi,self.y_jacobi,self.z_jacobi,error_x,error_y,error_z]
                 self.jacobi_iteraciones.append(list)
     #Se encarga de toda la ejecucion del programa
     #Recibe las 3 ecuaciones, el error o las iteraciones
     def ejecucion(self,ecuacion1,ecuacion2,ecuacion3,error_maximo,iteraciones):
         self.formar_matriz(ecuacion1,ecuacion2,ecuacion3)
+        self.imprirFormulas()
         self.jacobi(error_maximo,iteraciones)
         return self.salida
 
 jacobi_solve = JacobiMethod()
-print(jacobi_solve.ejecucion("10x+y+2z=3","4x+6y-z=9","-2x+3y+8z=51",0,0))
+print(jacobi_solve.ejecucion("10x+y+2z=3","4x+6y-z=9","-2x+3y+8z=51",0.00006,0))
