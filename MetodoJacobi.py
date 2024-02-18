@@ -13,15 +13,18 @@ class JacobiMethod:
         self.z_jacobi = 0
         self.var = ["x", "y", "z"]
         self.jacobi_iteraciones=[]
+        self.salida = ""
     
     #Metodos de impresion
     def imprimirIteraciones(self):
-        print(tb.tabulate(self.jacobi_iteraciones,headers=["Iteracion","X","Y","Z","Error X","Error Y","Error Z"],tablefmt="fancy_grid",floatfmt=(".0f",".7f",".7f",".7f",".2f",".2f",".2f")))
+        self.salida += "\n"
+        self.salida += (tb.tabulate(self.jacobi_iteraciones,headers=["Iteracion","X","Y","Z","Error X","Error Y","Error Z"],tablefmt="fancy_grid",floatfmt=(".0f",".7f",".7f",".7f",".2f",".2f",".2f")))
     
     def imprirFormulas(self):
         formulas = []
         formulas.append(self.despejes)
-        print(tb.tabulate(formulas,headers=["Formula X","Formula Y","Formula Z"],tablefmt="fancy_grid"))
+        self.salida += "\n"
+        self.salida += (tb.tabulate(formulas,headers=["Formula X","Formula Y","Formula Z"],tablefmt="fancy_grid"))
     
     def ordenar_ecuacion(self,ecuacion, variables):
         ecuacion_ordenada = [0, 0, 0, 0]  # SE CREA UN VECTOR [X,Y,Z,C], DE MANERA QUE SI FALTA ALGUNA VARIABLE, LA MISMA QUEDA EN 0 POR DEFECTO
@@ -178,7 +181,7 @@ class JacobiMethod:
         self.igualdades[2] = self.obtener_igualdad(ec3)
         #Reordenamos la matriz para mantener los mayores valores en la diagonal principal
         matriz = self.ordenar_matriz(matriz,self.var)
-        print(matriz)
+        self.salida += str(matriz)+"\n"
         #Creamos los despejes o formulas pertencientes a la cada ecuacion mediante la matriz, las igualdades y las incognitas de cada ecuacion 
         self.despejes[0]=self.despejar_incognitas(self.ordenar_ecuacion(self.separar_terminos_ecuacion(matriz[0]),self.incognitas(ec1)), int(self.igualdades[0][1:]), 0,self.incognitas(ec1))
         self.despejes[1]=self.despejar_incognitas(self.ordenar_ecuacion(self.separar_terminos_ecuacion(matriz[1]),self.incognitas(ec2)), int(self.igualdades[1][1:]), 1,self.incognitas(ec2))  
@@ -215,7 +218,7 @@ class JacobiMethod:
     #Simula las operaciones del metodo de jacobi
     #Recibe el numero de iteraciones y el error maximo   
     def jacobi(self,error_max,iteraciones):
-            # Valores iniciales para las iteraciones por defecto se comienza en cero
+        # Valores iniciales para las iteraciones por defecto se comienza en cero
         self.x_jacobi = 0
         self.y_jacobi = 0
         self.z_jacobi = 0
@@ -225,7 +228,7 @@ class JacobiMethod:
         z_form = self.despejes[2]
         self.imprirFormulas()
         if (iteraciones == 0 and error_max == 0): #En caso de que se ingresen 0 iteraciones y 0 en error se da el mensaje de error
-            print("No se establecieron los paremetro necesarios")
+            self.salida += ("\nNo se establecieron los paremetros necesarios")
         if (iteraciones > 0 and error_max > 0): # Condicion Unica ejecuta el metodo tanto por error como por iteraciones
             self.jacobi(error_max,0) #Realiza el metodo con el error
             self.jacobi_iteraciones = [] #vaciamos la lista
@@ -234,7 +237,8 @@ class JacobiMethod:
             iteraciones = -1
             error_max = -1
             self.jacobi_iteraciones = []
-        if iteraciones > 0: # Ciclo con iteraciones
+        if iteraciones > 0 and error_max < 0: # Ciclo con iteraciones
+            self.salida += "\n\nCondicion de parada -> "+ str(iteraciones) + " iteraciones"
             list = [1,self.x_jacobi,self.y_jacobi,self.y_jacobi]
             self.jacobi_iteraciones.append(list)
             for i in range(1,iteraciones): # El ciclo se realiza hasta la iteraciones ingresada iniciando en 1
@@ -256,7 +260,8 @@ class JacobiMethod:
                    list = [i+1,self.x_jacobi,self.y_jacobi,self.z_jacobi]
                 self.jacobi_iteraciones.append(list)
             self.imprimirIteraciones()
-        if iteraciones == 0: # Ciclo con error minimo
+        if iteraciones == 0 and error_max > 0: # Ciclo con error minimo
+            self.salida += "\nCondicion de parada -> \tError menor a:" +str(error_max)
             list = [1,self.x_jacobi,self.y_jacobi,self.y_jacobi]
             self.jacobi_iteraciones.append(list)
             error_x = 0
@@ -293,12 +298,12 @@ class JacobiMethod:
                 else:
                    list = [i+1,self.x_jacobi,self.y_jacobi,self.z_jacobi]
                 self.jacobi_iteraciones.append(list)
-
+    #Se encarga de toda la ejecucion del programa
+    #Recibe las 3 ecuaciones, el error o las iteraciones
+    def ejecucion(self,ecuacion1,ecuacion2,ecuacion3,error_maximo,iteraciones):
+        self.formar_matriz(ecuacion1,ecuacion2,ecuacion3)
+        self.jacobi(error_maximo,iteraciones)
+        return self.salida
 
 jacobi_solve = JacobiMethod()
-
-jacobi_solve.formar_matriz("10x+y+2z=3","4x+6y-z=9","-2x+3y+8z=51")
-
-jacobi_solve.jacobi(0,5) # Recibe el error y la iteraciones
-
-#jacobi_solve.imprimirIteraciones()
+print(jacobi_solve.ejecucion("10x+y+2z=3","4x+6y-z=9","-2x+3y+8z=51",0,0))
