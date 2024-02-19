@@ -65,7 +65,7 @@ class Aplication(tk.Frame):
         
         self.manual_btn = tk.Button(self.master,
                                     text="Manual de usuario",
-                                    command=lambda: self.history_view(),
+                                    command=lambda: self.manual_view(),
                                     **self.buttons_style)
         self.manual_btn.place(relx=0.3, rely=0.8, anchor="w")
         self.manual_btn.bind("<Enter>",lambda event: self.in_cursor_btn(event, 1))
@@ -114,6 +114,12 @@ class Aplication(tk.Frame):
 
         # CREANDO EL VISOR DE PDF
         pdf_viewer = PDFViewerApp(self.master, "PROYECTO METODOS NUMERICOS.pdf", app)
+        pdf_viewer.canvas.pack(fill=BOTH, expand=True)
+# ----------------------------------------------------------------------
+    def manual_view(self):
+        self.master.title("Manual de Usuario")
+        self.clear_widgets()
+        pdf_viewer = PDFViewerApp(self.master, "manual.pdf", app)
         pdf_viewer.canvas.pack(fill=BOTH, expand=True)
 # ----------------------------------------------------------------------
     def jacobi_solver(self):
