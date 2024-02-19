@@ -26,6 +26,19 @@ class JacobiMethod:
         self.salida += "\n"
         self.salida += (tb.tabulate(formulas,headers=["Formula X","Formula Y","Formula Z"],tablefmt="fancy_grid"))
     
+    def imprmirMatriz(self,matriz):
+        impresion = ""
+        i = 0
+        for fila in matriz:
+            impresion += str(fila)+ " "+ "[" + str(self.var[i]) + "]" +" "+ " = " + str(self.igualdades[i][1:])
+            impresion += "\n"
+            i+=1
+        return impresion
+    
+    def impresionFinal(self):
+        mensaje = "\nLos valores para X , Y , Z son aproximadamente: " +"X: "+str(self.x_jacobi)+" "+"Y: "+str(self.y_jacobi)+" "+"Z: "+str(self.z_jacobi)
+        self.salida += mensaje
+    
     def ordenar_ecuacion(self,ecuacion, variables):
         ecuacion_ordenada = [0, 0, 0, 0]  # SE CREA UN VECTOR [X,Y,Z,C], DE MANERA QUE SI FALTA ALGUNA VARIABLE, LA MISMA QUEDA EN 0 POR DEFECTO
         for termino in ecuacion:  # LA ECUACION LLEGA EN ESTA FORMA ['-2x', 'z', '3y', '20']
@@ -175,13 +188,13 @@ class JacobiMethod:
             elif i == 2:
                 matriz.append(self.ordenar_ecuacion(self.separar_terminos_ecuacion(ec3),self.incognitas(ec3))[:3])
             
-            #Se obtiene la igualdad perteneciente a cada ecuacion y se ingresa en la lista de igualdades       
+        #Se obtiene la igualdad perteneciente a cada ecuacion y se ingresa en la lista de igualdades       
         self.igualdades[0] = self.obtener_igualdad(ec1)
         self.igualdades[1] = self.obtener_igualdad(ec2)
         self.igualdades[2] = self.obtener_igualdad(ec3)
+        self.salida += "\n"+str(self.imprmirMatriz(matriz))
         #Reordenamos la matriz para mantener los mayores valores en la diagonal principal
         matriz = self.ordenar_matriz(matriz,self.var)
-        self.salida += str(matriz)+"\n"
         #Creamos los despejes o formulas pertencientes a la cada ecuacion mediante la matriz, las igualdades y las incognitas de cada ecuacion 
         self.despejes[0]=self.despejar_incognitas(self.ordenar_ecuacion(self.separar_terminos_ecuacion(matriz[0]),self.incognitas(ec1)), int(self.igualdades[0][1:]), 0,self.incognitas(ec1))
         self.despejes[1]=self.despejar_incognitas(self.ordenar_ecuacion(self.separar_terminos_ecuacion(matriz[1]),self.incognitas(ec2)), int(self.igualdades[1][1:]), 1,self.incognitas(ec2))  
@@ -258,6 +271,7 @@ class JacobiMethod:
                    list = [i+1,self.x_jacobi,self.y_jacobi,self.z_jacobi,error_x,error_y,error_z]
                 self.jacobi_iteraciones.append(list)
             self.imprimirIteraciones()
+            self.impresionFinal()
         if iteraciones == 0 and error_max > 0: # Ciclo con error minimo
             self.salida += "\nCondicion de parada -> \tError menor a:" +str(error_max)
             list = [1,self.x_jacobi,self.y_jacobi,self.y_jacobi]
@@ -283,12 +297,14 @@ class JacobiMethod:
                     list = [i+1,float(self.x_jacobi),float(self.y_jacobi),float(self.z_jacobi),error_x,error_y,error_z]
                     self.jacobi_iteraciones.append(list)
                     self.imprimirIteraciones()
+                    self.impresionFinal()
                     break
                     #Reasignamos X,Y,Z con los valores actuales y repetimos el ciclo
                 self.x_jacobi = x_new
                 self.y_jacobi = y_new
                 self.z_jacobi = z_new
                 if(i>45): #Maximo de iteraciones establecido para la convergencia del metodo una vez llegado aqui se finaliza por defecto
+                    salida += "El metodo no convergio en " + str(i) + " iteraciones"
                     break
                 if(len(str(self.x_jacobi))>6 or len(str(self.y_jacobi))>6 or len(str(self.z_jacobi))>6 and i > 2):
                     list = [i+1,float(self.x_jacobi),float(self.y_jacobi),float(self.z_jacobi),error_x,error_y,error_z]
@@ -303,4 +319,6 @@ class JacobiMethod:
         self.imprirFormulas()
         self.jacobi(error_maximo,iteraciones)
         return self.salida
-
+    
+jacobi_solved = JacobiMethod()
+print(jacobi_solved.ejecucion("10x+y+2z=3","4x+6y-z=9","-2x+3y+8z=51",0.02,3))
