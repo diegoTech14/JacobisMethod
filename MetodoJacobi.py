@@ -18,7 +18,7 @@ class JacobiMethod:
     #Metodos de impresion
     def imprimirIteraciones(self):
         self.salida += "\n"
-        self.salida += (tb.tabulate(self.jacobi_iteraciones,headers=["Iteracion","X","Y","Z","Error X","Error Y","Error Z"],tablefmt="fancy_grid",floatfmt=(".0f",".7f",".7f",".7f",".2f",".2f",".2f")))
+        self.salida += (tb.tabulate(self.jacobi_iteraciones,headers=["Iteracion","X","Y","Z","Error X","Error Y","Error Z"],tablefmt="fancy_grid",floatfmt=(".0f",".7f",".7f",".7f",".4f",".4f",".4f")))
     
     def imprirFormulas(self):
         formulas = []
@@ -246,6 +246,9 @@ class JacobiMethod:
         x_form = self.despejes[0]
         y_form = self.despejes[1]
         z_form = self.despejes[2]
+        if (type(error_max) == int):
+            error_max = error_max / 100
+            print(error_max)
         if (iteraciones == 0 and error_max == 0): #En caso de que se ingresen 0 iteraciones y 0 en error se da el mensaje de error
             self.salida += ("\nNo se establecieron los paremetros necesarios")
         if (iteraciones > 0 and error_max > 0): # Condicion Unica ejecuta el metodo tanto por error como por iteraciones
@@ -296,7 +299,7 @@ class JacobiMethod:
                 error_x = self.calcularError(self.x_jacobi,x_new)
                 error_y = self.calcularError(self.y_jacobi,y_new)
                 error_z = self.calcularError(self.z_jacobi,z_new)
-                if ((error_x < error_max/100) and (error_y < error_max/100) and (error_z < error_max/100)):
+                if ((error_x < error_max) and (error_y < error_max) and (error_z < error_max)):
                     #Si los tres errores son menores al maximo asignamos los valores de X,Y,Z y rompemos el bucle
                     self.x_jacobi = x_new
                     self.y_jacobi = y_new
@@ -311,7 +314,8 @@ class JacobiMethod:
                 self.y_jacobi = y_new
                 self.z_jacobi = z_new
                 if(i>45): #Maximo de iteraciones establecido para la convergencia del metodo una vez llegado aqui se finaliza por defecto
-                    salida += "El metodo no convergio en " + str(i) + " iteraciones"
+                    self.imprimirIteraciones()
+                    self.salida += "\nEl metodo no convergio en " + str(i) + "  iteraciones"
                     break
                 if(len(str(self.x_jacobi))>6 or len(str(self.y_jacobi))>6 or len(str(self.z_jacobi))>6 and i > 2):
                     list = [i+1,float(self.x_jacobi),float(self.y_jacobi),float(self.z_jacobi),error_x,error_y,error_z]
