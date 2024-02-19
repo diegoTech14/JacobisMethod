@@ -295,6 +295,7 @@ class JacobiMethod:
                 else:
                    list = [i+1,self.x_jacobi,self.y_jacobi,self.z_jacobi,error_x,error_y,error_z]
                 self.jacobi_iteraciones.append(list)
+
     #Se encarga de toda la ejecucion del programa
     #Recibe las 3 ecuaciones, el error o las iteraciones
     def ejecucion(self,ecuacion1,ecuacion2,ecuacion3,error_maximo,iteraciones):
@@ -303,5 +304,3 @@ class JacobiMethod:
         self.jacobi(error_maximo,iteraciones)
         return self.salida
 
-jacobi_solve = JacobiMethod()
-print(jacobi_solve.ejecucion("10x+y+2z=3","4x+6y-z=9","-2x+3y+8z=51",0.00006,0))

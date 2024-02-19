@@ -1,19 +1,22 @@
 import tkinter as tk
 from tkinter import ttk
-
+from MetodoJacobi import JacobiMethod
 
 class JacobiDisplayApp():
     def __init__(self, master, app_instance):
         self.master = master
         self.app_instance = app_instance
+        self.master.resizable(True, True)
+        self.master.geometry("880x720")
         self.interface()
 
     def interface(self):
         # ESTILOS
-        self.master.configure(bg="#f0f0f0")
+        self.master.configure(bg="#CECECF")
         self.entry_bg = "#ffffff"  
         self.entry_fg = "#000000"  
         self.entry_font = ("Arial", 10)  
+        
 
         # LABEL ETIQUETAS
         self.label_frame = tk.LabelFrame(self.master)
@@ -49,89 +52,36 @@ class JacobiDisplayApp():
         self.label_errors = tk.Label(self.combobox_label_frame, text="Ingrese el error deseado:")
         self.label_errors.pack(side=tk.RIGHT, fill=tk.X, padx=35)
         
-        self.solve_button = tk.Button(self.master, text="Resolver", command= lambda: self.solver(), font=("Arial", 12, "bold"), bg="blue", fg="white")
+        self.solve_button = tk.Button(self.master, text="Resolver", command= lambda: self.solver(), font=("Arial", 12, "bold"), bg="#1D3987", fg="white")
         self.solve_button.pack(side=tk.BOTTOM, fill=tk.X, padx=25, pady=8)
         self.solver_frame = tk.Frame()
-        self.solver_frame.pack(fill=tk.BOTH, padx=25, pady=8)
+        self.solver_frame.pack(fill=tk.BOTH, padx=25, pady=25)
         
+        self.text_widget = tk.Text(self.solver_frame, 
+                                   wrap=tk.WORD, 
+                                   width=40, 
+                                   height=80, 
+                                   bg="#265A23",
+                                   fg="#FFF",
+                                   padx=8,
+                                   pady=8
+                                   )
+        self.text_widget.pack(fill=tk.BOTH, expand=True)  # Expand to fill the frame
+        self.text_widget.config(wrap=tk.WORD)
     def solver(self):
-        style = ttk.Style()
-        style.configure("Treeview.Heading", font=("Comic Sans MS", 11))
-        try:
-            self.solver_datagrid.get_children()
-            self.solver_datagrid.destroy()
-            solver(self)
-        except:
-            cantidad_variables = 3
-            
-            print(self.entry_error.get())
-            self.solver_datagrid = ttk.Treeview(self.solver_frame, columns=[str(i) for i in range(cantidad_variables+2)], show="headings")
-            self.solver_datagrid.heading("0", text="Iteración")
-            self.solver_datagrid.column("0", width=8, anchor="center")
-            
-            for i in range(cantidad_variables+1):
-                self.solver_datagrid.heading(str(i+1), text='X'+chr(8320 + i))
-                self.solver_datagrid.column(str(i+1), width=8, anchor="center")
-            self.solver_datagrid.pack(fill=tk.BOTH, expand=True)
-                
-                
-            resultados = [[1, 2, 3, 4],
-            [5, 6, 7, 8],
-            [9, 10, 11, 12],
-            [13, 14, 15, 16],
-            [9, 10, 11, 12],
-            [13, 14, 15, 16],
-            [9, 10, 11, 12],
-            [13, 14, 15, 16],
-            [9, 10, 11, 12],
-            [13, 14, 15, 16],
-            [9, 10, 11, 12],
-            [13, 14, 15, 16],
-            [9, 10, 11, 12],
-            [13, 14, 15, 16],
-            [9, 10, 11, 12],
-            [13, 14, 15, 16],
-            [9, 10, 11, 12],
-            [13, 14, 15, 16],
-            [9, 10, 11, 12],
-            [13, 14, 15, 16],
-            [9, 10, 11, 12],
-            [13, 14, 15, 16],
-            [9, 10, 11, 12],
-            [13, 14, 15, 16],
-            [9, 10, 11, 12],
-            [13, 14, 15, 16],
-            [9, 10, 11, 12],
-            [13, 14, 15, 16],
-            [9, 10, 11, 12],
-            [13, 14, 15, 16],
-            [9, 10, 11, 12],
-            [13, 14, 15, 16],
-            [9, 10, 11, 12],
-            [13, 14, 15, 16],
-            [9, 10, 11, 12],
-            [13, 14, 15, 16],
-            [9, 10, 11, 12],
-            [13, 14, 15, 16],
-            [9, 10, 11, 12],
-            [13, 14, 15, 16],
-            [9, 10, 11, 12],
-            [13, 14, 15, 16],
-            [9, 10, 11, 12],
-            [13, 14, 15, 16],
-            [9, 10, 11, 12],
-            [13, 14, 15, 16],
-            [9, 10, 11, 12],
-            [13, 14, 15, 16],
-            [9, 10, 11, 12],
-            [13, 14, 15, 16],
-            [17, 18, 19, 20]]
-            iteraciones = self.combobox_iterations.get()
-            if iteraciones:
-                iteraciones = int(iteraciones)
-            else:
-                iteraciones = len(resultados)
-            for i in range(iteraciones):
-                resultados[i] = [i]+resultados[i]
-            for i in range(iteraciones):
-                self.solver_datagrid.insert("", "end", values=resultados[i])
+        jacobi_solve = JacobiMethod()
+
+                  # Create the Text widget within the solver method
+
+        # Example usage: Insert some text into the widget
+        #self.text_widget.insert(tk.END, jacobi_solve.ejecucion("10x+y+2z=3","4x+6y-z=9","-2x+3y+8z=51",0.06,0))    
+ 
+
+        self.text_widget.insert(tk.END, jacobi_solve.ejecucion(
+            self.equation_one.get(),
+            self.equation_two.get(),
+            self.equation_three.get(),
+            float(self.entry_error.get()),
+            int(self.combobox_iterations.get()))
+        )
+           

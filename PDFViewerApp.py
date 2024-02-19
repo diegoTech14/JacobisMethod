@@ -12,6 +12,7 @@ class PDFViewerApp():
         self.width_page = None
         self.height_page = None
         self.rendered_page = None
+        self.master.geometry("880x720")
         
         # CARGA EL DOCUMENTO PDF
         try:
@@ -23,11 +24,11 @@ class PDFViewerApp():
         self.button_frame = tk.Frame(master, background="white")
         self.button_frame.pack(side=BOTTOM, fill=BOTH)
 
-        self.next_button = tk.Button(self.button_frame, text="Siguiente \u2192", command=self.next_page,**self.app_instance.buttons_style)
+        self.next_button = tk.Button(self.button_frame, text="\u2192", command=self.next_page,**self.app_instance.buttons_style)
         self.next_button.pack(side=RIGHT, ipadx=10)
         self.next_button.bind("<Enter>", lambda event: self.app_instance.in_cursor_btn(event, 1))
         self.next_button.bind("<Leave>", lambda event: self.app_instance.out_cursor_btn(event, 1))
-        self.prev_button = tk.Button(self.button_frame, text="  \u2190 Anterior", command=self.prev_page,**self.app_instance.buttons_style)
+        self.prev_button = tk.Button(self.button_frame, text="\u2190", command=self.prev_page,**self.app_instance.buttons_style)
         self.prev_button.pack(side=RIGHT, ipadx=10)
         self.prev_button.bind("<Enter>", lambda event: self.app_instance.in_cursor_btn(event, 1))
         self.prev_button.bind("<Leave>", lambda event: self.app_instance.out_cursor_btn(event, 1))
@@ -89,7 +90,7 @@ class PDFViewerApp():
         # RENDERIZA LA IMAGEN EN EL CANVAS
         self.canvas.create_image(0, 0, anchor=tk.NW, image=self.rendered_page)
         self.canvas.config(scrollregion=self.canvas.bbox("all"))
-        self.master.geometry(f"{self.width_page}x480")
+        self.master.geometry(f"{self.width_page}x720")
 # ----------------------------------------------------------------------
     # MÉTODO PARA HACER SCROLL EN EL CANVAS
     def _on_mousewheel(self, event):
