@@ -113,7 +113,7 @@ class Aplication(tk.Frame):
         self.clear_widgets()
 
         # CREANDO EL VISOR DE PDF
-        pdf_viewer = PDFViewerApp(self.master, "PROYECTO METODOS NUMERICOS.pdf", app)
+        pdf_viewer = PDFViewerApp(self.master, "HISTORIA JACOBI.pdf", app)
         pdf_viewer.canvas.pack(fill=BOTH, expand=True)
 # ----------------------------------------------------------------------
     def manual_view(self):
