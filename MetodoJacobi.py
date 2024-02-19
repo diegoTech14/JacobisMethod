@@ -192,9 +192,16 @@ class JacobiMethod:
         self.igualdades[0] = self.obtener_igualdad(ec1)
         self.igualdades[1] = self.obtener_igualdad(ec2)
         self.igualdades[2] = self.obtener_igualdad(ec3)
-        self.salida += "\n"+str(self.imprmirMatriz(matriz))
         #Reordenamos la matriz para mantener los mayores valores en la diagonal principal
         matriz = self.ordenar_matriz(matriz,self.var)
+        #Ajusta la matriz a imprimir
+        matriz_impresion = []
+        matriz_impresion.append(self.ordenar_ecuacion(self.separar_terminos_ecuacion(matriz[0]),self.incognitas(ec1))[:3])
+        matriz_impresion.append(self.ordenar_ecuacion(self.separar_terminos_ecuacion(matriz[1]),self.incognitas(ec2))[:3])
+        matriz_impresion.append(self.ordenar_ecuacion(self.separar_terminos_ecuacion(matriz[2]),self.incognitas(ec3))[:3])
+        self.salida += "\n"+str(self.imprmirMatriz(matriz_impresion))
+        #Reordenamos la matriz para mantener los mayores valores en la diagonal principal
+        #matriz = self.ordenar_matriz(matriz,self.var)
         #Creamos los despejes o formulas pertencientes a la cada ecuacion mediante la matriz, las igualdades y las incognitas de cada ecuacion 
         self.despejes[0]=self.despejar_incognitas(self.ordenar_ecuacion(self.separar_terminos_ecuacion(matriz[0]),self.incognitas(ec1)), int(self.igualdades[0][1:]), 0,self.incognitas(ec1))
         self.despejes[1]=self.despejar_incognitas(self.ordenar_ecuacion(self.separar_terminos_ecuacion(matriz[1]),self.incognitas(ec2)), int(self.igualdades[1][1:]), 1,self.incognitas(ec2))  
