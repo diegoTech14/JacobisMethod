@@ -327,6 +327,3 @@ class JacobiMethod:
         self.imprirFormulas()
         self.jacobi(error_maximo,iteraciones)
         return self.salida
-
-jacobi_solved = JacobiMethod()
-print(jacobi_solved.ejecucion("10x+y+2z=3","4x+6y-z=9","-2x+3y+8z=51",0,2))
