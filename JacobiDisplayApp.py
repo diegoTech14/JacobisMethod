@@ -69,19 +69,28 @@ class JacobiDisplayApp():
         self.text_widget.pack(fill=tk.BOTH, expand=True)  # Expand to fill the frame
         self.text_widget.config(wrap=tk.WORD)
     def solver(self):
+        self.text_widget.delete('1.0', tk.END)
+        valueError = ""
         jacobi_solve = JacobiMethod()
 
-                  # Create the Text widget within the solver method
+        # Create the Text widget within the solver method
 
         # Example usage: Insert some text into the widget
         #self.text_widget.insert(tk.END, jacobi_solve.ejecucion("10x+y+2z=3","4x+6y-z=9","-2x+3y+8z=51",0.06,0))    
  
+        
+        if(self.entry_error.get() == ""):
+            print("Hi1")
+            valueError = "0"
+        else:
+            print("hi2")
+            valueError = self.entry_error.get()
 
         self.text_widget.insert(tk.END, jacobi_solve.ejecucion(
             self.equation_one.get(),
             self.equation_two.get(),
             self.equation_three.get(),
-            float(self.entry_error.get()),
+            float(valueError),
             int(self.combobox_iterations.get()))
         )
            
