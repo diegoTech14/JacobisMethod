@@ -52,6 +52,8 @@ class JacobiDisplayApp():
         self.label_errors = tk.Label(self.combobox_label_frame, text="Ingrese el error deseado:")
         self.label_errors.pack(side=tk.RIGHT, fill=tk.X, padx=35)
         
+        self.exit_button = tk.Button(self.master, text="\u2190 Volver", command= lambda: self.go_to_menu(), font=("Arial", 12, "bold"), bg="#1D3987", fg="white")
+        self.exit_button.pack(side=tk.BOTTOM, fill=tk.X, padx=25, pady=8)
         self.solve_button = tk.Button(self.master, text="Resolver", command= lambda: self.solver(), font=("Arial", 12, "bold"), bg="#1D3987", fg="white")
         self.solve_button.pack(side=tk.BOTTOM, fill=tk.X, padx=25, pady=8)
         self.solver_frame = tk.Frame()
@@ -93,3 +95,6 @@ class JacobiDisplayApp():
             float(valueError),
             int(self.combobox_iterations.get()))
         )
+    def go_to_menu(self):
+        self.app_instance.clear_widgets()
+        self.app_instance.main_interface()

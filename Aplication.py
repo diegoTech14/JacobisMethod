@@ -26,7 +26,7 @@ class Aplication(tk.Frame):
                              "padx": 5}
         self.buttons_style = {"font": ("Arial", 11, "bold"),
                               "fg": "white",
-                              "bg": "#1D3987",
+                              "bg": "blue",
                               "pady": 1}
         self.efect_btn_style = {"font": ("Arial", 11, "bold"),
                                 "fg": "black",
@@ -79,12 +79,20 @@ class Aplication(tk.Frame):
                              lambda event: self.in_cursor_btn(event, 1))
         self.calc_btn.bind("<Leave>",
                              lambda event: self.out_cursor_btn(event, 1))
-
-        self.exit_btn = tk.Button(self.master, text="Salir del programa",
+        self.creators = tk.Button(self.master, text="Creadores",
+                                    command=lambda: self.creators_view(),
+                                    **self.buttons_style)
+        self.creators.config(bg="green")
+        self.creators.place(relx=0.7, rely=0.8, anchor="w")
+        self.creators.bind("<Enter>",
+                             lambda event: self.in_cursor_btn(event, 0))
+        self.creators.bind("<Leave>",
+                             lambda event: self.out_cursor_btn(event, 2))
+        self.exit_btn = tk.Button(self.master, text="Cerrar App",
                                     command=lambda: self.master.destroy(),
                                     **self.buttons_style)
         self.exit_btn.config(bg="red")
-        self.exit_btn.place(relx=0.8, rely=0.8, anchor="center")
+        self.exit_btn.place(relx=0.9, rely=0.8, anchor="center")
         self.exit_btn.bind("<Enter>",
                              lambda event: self.in_cursor_btn(event, 0))
         self.exit_btn.bind("<Leave>",
@@ -100,8 +108,18 @@ class Aplication(tk.Frame):
         if tipo == 0:
             event.widget.config(**self.buttons_style)
             event.widget.config(bg="red")
+        elif tipo == 2:
+            event.widget.config(**self.buttons_style)
+            event.widget.config(bg="green")
         else:
             event.widget.config(**self.buttons_style)
+            event.widget.config(bg="blue")
+# ----------------------------------------------------------------------
+    def creators_view(self):
+        self.master.title("Desarrolladores")
+        self.clear_widgets()
+        creators_views = PDFViewerApp(self.master, "creadores.pdf", app)
+        creators_views.canvas.pack()
 # ----------------------------------------------------------------------
     def reopen(self):
         root = Tk()
