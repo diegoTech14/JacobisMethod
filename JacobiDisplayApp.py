@@ -84,4 +84,3 @@ class JacobiDisplayApp():
             float(self.entry_error.get()),
             int(self.combobox_iterations.get()))
         )
-           
