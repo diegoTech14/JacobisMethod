@@ -231,7 +231,7 @@ class JacobiMethod:
                 fraccion = float(num) 
                 return fraccion    
             except ValueError:
-                return f"La fraccion {num} no es una fraccion valida"
+                self.salida += f"La fraccion {num} no es una fraccion valida"
         else: #En caso de que no este el signo se devuelve el numero
             return num 
 
