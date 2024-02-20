@@ -17,7 +17,7 @@ class Aplication(tk.Frame):
         self.master.title("Proyecto de Métodos Numéricos")
         self.master.iconbitmap("./images/icon.ico")
         self.master.resizable(True, True)
-        self.master.geometry("880x720")
+        self.master.geometry("880x620")
 
         # DICCIONARIO ESTILIZADOR PARA LOS ELEMENTOS GRAFICOS
         self.labels_style = {"font": ("Arial", 13, "bold"),
@@ -114,21 +114,19 @@ class Aplication(tk.Frame):
 
         # CREANDO EL VISOR DE PDF
         pdf_viewer = PDFViewerApp(self.master, "HISTORIA JACOBI.pdf", app)
-        pdf_viewer.canvas.pack(fill=BOTH, expand=True)
+        pdf_viewer.canvas.pack()
 # ----------------------------------------------------------------------
     def manual_view(self):
         self.master.title("Manual de Usuario")
         self.clear_widgets()
         pdf_viewer = PDFViewerApp(self.master, "manual.pdf", app)
-        pdf_viewer.canvas.pack(fill=BOTH, expand=True)
+        pdf_viewer.canvas.pack()
 # ----------------------------------------------------------------------
     def jacobi_solver(self):
         self.master.title("Calculadora de Ecuaciones Lineales por el Método de Jacobi")
         self.clear_widgets()
-        jacobi_viewer = JacobiDisplayApp(self.master, self)
-        self.master.geometry("1200x600")
-        
-        jacobi_viewer.pack(fill=BOTH, expand=True)
+        JacobiDisplayApp(self.master, app)
+        self.master.geometry("1080x600")
 # ----------------------------------------------------------------------
     def clear_widgets(self):
         # ELIMINA TODOS LOS WIDGETS DE LA VENTANA PRINCIPAL

@@ -12,8 +12,6 @@ class PDFViewerApp():
         self.width_page = None
         self.height_page = None
         self.rendered_page = None
-        self.master.geometry("880x720")
-        
         # CARGA EL DOCUMENTO PDF
         try:
             self.pdf_document = fitz.open(pdf_path)
@@ -90,7 +88,7 @@ class PDFViewerApp():
         # RENDERIZA LA IMAGEN EN EL CANVAS
         self.canvas.create_image(0, 0, anchor=tk.NW, image=self.rendered_page)
         self.canvas.config(scrollregion=self.canvas.bbox("all"))
-        self.master.geometry(f"{self.width_page}x720")
+        self.master.geometry(f"{self.width_page}x580")
 # ----------------------------------------------------------------------
     # MÉTODO PARA HACER SCROLL EN EL CANVAS
     def _on_mousewheel(self, event):
