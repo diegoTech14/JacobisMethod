@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+from tkinter import messagebox
 from MetodoJacobi import JacobiMethod
 
 class JacobiDisplayApp():
@@ -73,28 +74,26 @@ class JacobiDisplayApp():
     def solver(self):
         self.text_widget.delete('1.0', tk.END)
         valueError = ""
-        jacobi_solve = JacobiMethod()
+        try:
+            jacobi_solve = JacobiMethod()
+            if(self.entry_error.get() == ""):
+                valueError = "0"
+            else:
+                valueError = self.entry_error.get()
 
+            self.text_widget.insert(tk.END, jacobi_solve.ejecucion(
+                self.equation_one.get(),
+                self.equation_two.get(),
+                self.equation_three.get(),
+                float(valueError),
+                int(self.combobox_iterations.get())))
+        except:
+            messagebox.showerror("Error al calcular", "Procura que las ecuaciones estén bien escritas. Por ejemplo -> 10x+y+2z=3")
         # Create the Text widget within the solver method
 
         # Example usage: Insert some text into the widget
         #self.text_widget.insert(tk.END, jacobi_solve.ejecucion("10x+y+2z=3","4x+6y-z=9","-2x+3y+8z=51",0.06,0))    
  
-        
-        if(self.entry_error.get() == ""):
-            print("Hi1")
-            valueError = "0"
-        else:
-            print("hi2")
-            valueError = self.entry_error.get()
-
-        self.text_widget.insert(tk.END, jacobi_solve.ejecucion(
-            self.equation_one.get(),
-            self.equation_two.get(),
-            self.equation_three.get(),
-            float(valueError),
-            int(self.combobox_iterations.get()))
-        )
     def go_to_menu(self):
         self.app_instance.clear_widgets()
         self.app_instance.main_interface()
