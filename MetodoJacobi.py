@@ -132,7 +132,7 @@ class JacobiMethod:
         elif(bandera == 1):
             variable = incognitas[1]
         elif(bandera == 2):
-                variable = incognitas[2]
+            variable = incognitas[2]
             
         solucion = sp.solve(ecuacion, variable, dict=True)       
         return solucion[0][variable]
@@ -200,12 +200,10 @@ class JacobiMethod:
         matriz_impresion.append(self.ordenar_ecuacion(self.separar_terminos_ecuacion(matriz[1]),self.incognitas(ec2))[:3])
         matriz_impresion.append(self.ordenar_ecuacion(self.separar_terminos_ecuacion(matriz[2]),self.incognitas(ec3))[:3])
         self.salida += "\n"+str(self.imprmirMatriz(matriz_impresion))
-        #Reordenamos la matriz para mantener los mayores valores en la diagonal principal
-        #matriz = self.ordenar_matriz(matriz,self.var)
-        #Creamos los despejes o formulas pertencientes a la cada ecuacion mediante la matriz, las igualdades y las incognitas de cada ecuacion 
-        self.despejes[0]=self.despejar_incognitas(self.ordenar_ecuacion(self.separar_terminos_ecuacion(matriz[0]),self.incognitas(ec1)), int(self.igualdades[0][1:]), 0,self.incognitas(ec1))
-        self.despejes[1]=self.despejar_incognitas(self.ordenar_ecuacion(self.separar_terminos_ecuacion(matriz[1]),self.incognitas(ec2)), int(self.igualdades[1][1:]), 1,self.incognitas(ec2))  
-        self.despejes[2]=self.despejar_incognitas(self.ordenar_ecuacion(self.separar_terminos_ecuacion(matriz[2]),self.incognitas(ec3)), int(self.igualdades[2][1:]), 2,self.incognitas(ec3))
+        #Creamos los despejes o formulas pertencientes a la cada ecuacion mediante la matriz, las igualdades y las incognitas de cada ecuacion
+        self.despejes[0]=self.despejar_incognitas(self.ordenar_ecuacion(self.separar_terminos_ecuacion(matriz[0]),self.incognitas(matriz[0])), int(self.igualdades[0][1:]), 0,self.incognitas(matriz[0]))
+        self.despejes[1]=self.despejar_incognitas(self.ordenar_ecuacion(self.separar_terminos_ecuacion(matriz[1]),self.incognitas(matriz[1])), int(self.igualdades[1][1:]), 1,self.incognitas(matriz[1]))  
+        self.despejes[2]=self.despejar_incognitas(self.ordenar_ecuacion(self.separar_terminos_ecuacion(matriz[2]),self.incognitas(matriz[2])), int(self.igualdades[2][1:]), 2,self.incognitas(matriz[2]))
 
     #Realiza el calculo del error de lass iteraciones
     #Recibe un valor anterior y un valor actual
@@ -248,7 +246,6 @@ class JacobiMethod:
         z_form = self.despejes[2]
         if (type(error_max) == int):
             error_max = error_max / 100
-            print(error_max)
         if (iteraciones == 0 and error_max == 0): #En caso de que se ingresen 0 iteraciones y 0 en error se da el mensaje de error
             self.salida += ("\nNo se establecieron los paremetros necesarios")
         if (iteraciones > 0 and error_max > 0): # Condicion Unica ejecuta el metodo tanto por error como por iteraciones
@@ -330,3 +327,6 @@ class JacobiMethod:
         self.imprirFormulas()
         self.jacobi(error_maximo,iteraciones)
         return self.salida
+
+jacobi_solved = JacobiMethod()
+print(jacobi_solved.ejecucion("10x+y+2z=3","4x+6y-z=9","-2x+3y+8z=51",0,2))
